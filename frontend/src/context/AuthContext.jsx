@@ -34,8 +34,7 @@ export function AuthProvider({ children }) {
             emergencyName: profile.emergency_name || profile.emergencyName,
             emergencyPhone: profile.emergency_phone || profile.emergencyPhone,
             emergencyRelation: profile.emergency_relation || profile.emergencyRelation,
-            // Lender specific
-            lenderProfileCompleted: !!(profile.lender_profile_completed || profile.lenderProfileCompleted),
+            lenderProfileCompleted: profile.lender_profile_completed === 1 || profile.lenderProfileCompleted === 1 || profile.lender_profile_completed === true || profile.lenderProfileCompleted === true,
             minLoan: profile.min_loan ?? profile.minLoan,
             maxLoan: profile.max_loan ?? profile.maxLoan,
             minRate: profile.min_rate ?? profile.minRate,
@@ -45,8 +44,8 @@ export function AuthProvider({ children }) {
               ? profile.supported_loan_types.split(",") 
               : (Array.isArray(profile.supportedLoanTypes) ? profile.supportedLoanTypes : []),
             customerType: profile.customer_type ?? profile.customerType,
-            lenderName: profile.full_name || profile.lenderName,
-            phoneNumber: profile.emergency_phone || profile.phoneNumber
+            lenderName: profile.lenderName || (profile.role === "lender" ? profile.full_name : ""),
+            phoneNumber: profile.phone_number || profile.phoneNumber || profile.emergency_phone
           };
           setPatientProfile(normalized);
           return;
@@ -86,8 +85,11 @@ export function AuthProvider({ children }) {
     id: clerkUser.id,
     email: clerkUser.primaryEmailAddress?.emailAddress,
     name: patientProfile?.fullName || clerkUser.fullName || clerkUser.primaryEmailAddress?.emailAddress?.split("@")[0] || "User",
+    imageUrl: clerkUser.imageUrl,
     city: patientProfile?.city || clerkUser.unsafeMetadata?.city || "",
-    role: (patientProfile?.role === "lender" || clerkUser.unsafeMetadata?.role === "lender" || patientProfile?.lenderProfileCompleted) ? "lender" : "patient"
+    role: patientProfile 
+      ? (patientProfile.role === "lender" || patientProfile.lenderProfileCompleted ? "lender" : "patient")
+      : (clerkUser.unsafeMetadata?.role || "patient")
   } : null;
 
   const hasProfile = !!patientProfile;
