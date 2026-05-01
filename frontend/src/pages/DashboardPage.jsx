@@ -5,8 +5,8 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 
 export default function DashboardPage() {
-  const { user, isLoaded } = useUser();
-  const { patientProfile, profileLoading, logout } = useAuth();
+  const { user: clerkUser, isLoaded } = useUser();
+  const { user, patientProfile, profileLoading, logout } = useAuth();
   const navigate = useNavigate();
 
   if (!isLoaded || profileLoading) {
@@ -43,7 +43,7 @@ export default function DashboardPage() {
                 <img src={user.imageUrl} alt="Profile" className="w-full h-full object-cover" />
               ) : (
                 <span className="text-3xl font-bold text-brand-600">
-                  {(patientProfile.lenderName || patientProfile.fullName || patientProfile.full_name || "U")[0]}
+                  {(patientProfile.lenderName || patientProfile.fullName || "U")[0]}
                 </span>
               )}
             </div>
