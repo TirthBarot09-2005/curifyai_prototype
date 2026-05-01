@@ -123,10 +123,6 @@ def rank_hospitals(hospitals: list[dict], specialty: str, location: str,
     else:
         final_list = scored
 
-    # 2. Filter out those with 0 affordability if user provided a budget
-    if budget_max > 0 and budget_max < 5000000:
-        final_list = [s for s in final_list if s["affordability_score"] > 0]
-
     final_list.sort(key=lambda x: x["composite_score"], reverse=True)
     return final_list[:10]
 
